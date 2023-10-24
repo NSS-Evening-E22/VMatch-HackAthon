@@ -55,4 +55,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 
+// Alexis Endpoints ^^
+// Thomas Endpoints ->
+
 app.Run();
