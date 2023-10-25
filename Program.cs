@@ -137,6 +137,32 @@ app.MapPut("/api/players/{id}", (int playerId, UpdatePlayerDTO updatePlayerDTO, 
     return Results.NoContent();
 });
 
+//Add a team to a Game
+app.MapPost("/api/games/{gameId}/teams/{teamId}", (int gameId, int teamId, VolunteerMatchDbContext db) =>
+{
+    
+    TeamGame newTeamGame = new TeamGame()
+    {
+        TeamOneId = teamId,
+        TeamTwoId = teamId, 
+        GameId = gameId,
+        WinningTeamId = teamId,
+    };
+
+    try
+    {
+        db.TeamGames.Add(newTeamGame);
+        db.SaveChanges();
+        return Results.Ok(newTeamGame);
+    }
+    catch (DbUpdateException)
+    {
+        return Results.Ok("Game was not created");
+    }
+});
+
+
+
 
 // Alexis Endpoints ^^
 // Thomas Endpoints ->
