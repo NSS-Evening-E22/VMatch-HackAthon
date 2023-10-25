@@ -9,5 +9,7 @@
         public Team TeamOne { get; set; }
         public int TeamTwoId { get; set; }
         public Team TeamTwo { get; set; }
+        public int WinningTeamId { get; set; }
+        public Team WinningTeam { get; set; }
       }
 }

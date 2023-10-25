@@ -12,7 +12,7 @@ using Volunteer_Match_Backend;
 namespace Volunteer_Match_BE.Migrations
 {
     [DbContext(typeof(VolunteerMatchDbContext))]
-    [Migration("20231024232427_InitialCreate")]
+    [Migration("20231025003705_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -82,15 +82,16 @@ namespace Volunteer_Match_BE.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("TeamId")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("TeamId")
+                        .HasColumnType("integer");
 
                     b.Property<string>("VolunteerId")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("TeamId");
 
                     b.ToTable("Players");
                 });
@@ -102,9 +103,6 @@ namespace Volunteer_Match_BE.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CaptainId")
-                        .HasColumnType("integer");
 
                     b.Property<int>("GamesLost")
                         .HasColumnType("integer");
@@ -130,9 +128,6 @@ namespace Volunteer_Match_BE.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CaptainId")
-                        .IsUnique();
-
                     b.ToTable("Teams");
                 });
 
@@ -153,6 +148,9 @@ namespace Volunteer_Match_BE.Migrations
                     b.Property<int>("TeamTwoId")
                         .HasColumnType("integer");
 
+                    b.Property<int>("WinningTeamId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
                     b.HasIndex("GameId");
@@ -160,6 +158,8 @@ namespace Volunteer_Match_BE.Migrations
                     b.HasIndex("TeamOneId");
 
                     b.HasIndex("TeamTwoId");
+
+                    b.HasIndex("WinningTeamId");
 
                     b.ToTable("TeamGames");
                 });
@@ -200,15 +200,15 @@ namespace Volunteer_Match_BE.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Volunteer_Match_Backend.Models.Team", b =>
+            modelBuilder.Entity("Volunteer_Match_Backend.Models.Player", b =>
                 {
-                    b.HasOne("Volunteer_Match_Backend.Models.Player", "Captain")
-                        .WithOne("Team")
-                        .HasForeignKey("Volunteer_Match_Backend.Models.Team", "CaptainId")
+                    b.HasOne("Volunteer_Match_Backend.Models.Team", "Team")
+                        .WithMany("Players")
+                        .HasForeignKey("TeamId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Captain");
+                    b.Navigation("Team");
                 });
 
             modelBuilder.Entity("Volunteer_Match_Backend.Models.TeamGame", b =>
@@ -231,17 +231,24 @@ namespace Volunteer_Match_BE.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Volunteer_Match_Backend.Models.Team", "WinningTeam")
+                        .WithMany()
+                        .HasForeignKey("WinningTeamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Game");
 
                     b.Navigation("TeamOne");
 
                     b.Navigation("TeamTwo");
+
+                    b.Navigation("WinningTeam");
                 });
 
-            modelBuilder.Entity("Volunteer_Match_Backend.Models.Player", b =>
+            modelBuilder.Entity("Volunteer_Match_Backend.Models.Team", b =>
                 {
-                    b.Navigation("Team")
-                        .IsRequired();
+                    b.Navigation("Players");
                 });
 #pragma warning restore 612, 618
         }

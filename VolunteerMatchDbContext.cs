@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Reflection.Metadata;
 using Volunteer_Match_Backend.Models;
 
 namespace Volunteer_Match_Backend
@@ -14,6 +15,12 @@ namespace Volunteer_Match_Backend
         {
 
         }
-
+        //protected override void OnModelCreating(ModelBuilder modelBuilder)
+        //{
+        //    modelBuilder.Entity<Team>()
+        //        .HasMany(e => e.Players)
+        //        .WithOne(e => e.Team)
+        //        .HasForeignKey(e => e.TeamId);
+        //}
     }
 }
