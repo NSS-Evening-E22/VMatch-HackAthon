@@ -137,27 +137,30 @@ app.MapPut("/api/players/{id}", (int playerId, UpdatePlayerDTO updatePlayerDTO, 
     return Results.NoContent();
 });
 
-//Add player to a Team 
-app.MapPost("/api/teams/{teamId}/players/{playerId}", (int teamId, int playerId, VolunteerMatchDbContext db) =>
+//Add a team to a Game
+app.MapPost("/api/games/{gameId}/teams/{teamId}", (int gameId, int teamId, VolunteerMatchDbContext db) =>
 {
-    var teamToAddPlayer = db.Teams.FirstOrDefault(t => t.Id == teamId);
-    var playerToAdd = db.Players.FirstOrDefault(p => p.Id == playerId);
-
-    if (teamToAddPlayer == null || playerToAdd == null)
+    
+    TeamGame newTeamGame = new TeamGame()
     {
-        return Results.NotFound();
-    }
+        TeamOneId = teamId,
+        TeamTwoId = teamId, 
+        GameId = gameId,
+        WinningTeamId = teamId,
+    };
 
-    if (teamToAddPlayer.Players == null)
+    try
     {
-        teamToAddPlayer.Players = new List<Player>();
+        db.TeamGames.Add(newTeamGame);
+        db.SaveChanges();
+        return Results.Ok(newTeamGame);
     }
-
-    teamToAddPlayer.Players.Add(playerToAdd);
-    db.SaveChanges();
-
-    return Results.Created($"/api/teams/{teamToAddPlayer.Id}", teamToAddPlayer);
+    catch (DbUpdateException)
+    {
+        return Results.Ok("Game was not created");
+    }
 });
+
 
 
 
