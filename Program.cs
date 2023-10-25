@@ -57,6 +57,84 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 
+//Get All Players
+app.MapGet("/api/players", (VolunteerMatchDbContext db) =>
+{
+    var players = db.Players.ToList();
+    return Results.Ok(players);
+});
+//Get Single Player
+app.MapGet("/api/players/{id}", (int playerId, VolunteerMatchDbContext db) =>
+{
+    var player = db.Players.FirstOrDefault(p => p.Id == playerId);
+
+    if (player == null)
+    {
+        return Results.NotFound();
+    }
+
+    return Results.Ok(player);
+});
+
+//Create Player
+app.MapPost("/api/player", (VolunteerMatchDbContext db, CreatePlayerDTO playerDTO) =>
+{
+    var player = new Player
+    {
+        VolunteerId = playerDTO.VolunteerId,
+        TeamId = playerDTO.TeamId,
+        FirstName = playerDTO.FirstName,
+        LastName = playerDTO.LastName,
+        Position = playerDTO.Position,
+        IsCaptain = playerDTO.IsCaptain
+    };
+
+    
+    db.Players.Add(player);
+    db.SaveChanges();
+
+    return Results.Created($"/players/{player.Id}", player);
+});
+
+//Delete PLayer
+app.MapDelete("/api/players/{id}", (int playerId, VolunteerMatchDbContext db) =>
+{
+    var player = db.Players.FirstOrDefault(p => p.Id ==playerId);
+
+    if (player == null)
+    {
+        return Results.NotFound();
+    }
+
+    db.Remove(player);
+    db.SaveChanges();
+
+    return Results.NoContent();
+});
+
+//Update player
+app.MapPut("/api/players/{id}", (int playerId, UpdatePlayerDTO updatePlayerDTO, VolunteerMatchDbContext db) =>
+{
+    var player = db.Players.FirstOrDefault(p => p.Id == playerId);
+
+    if (player == null)
+    {
+        return Results.NotFound();
+    }
+
+    player.VolunteerId = updatePlayerDTO.VolunteerId;
+    player.TeamId = updatePlayerDTO.TeamId;
+    player.FirstName = updatePlayerDTO.FirstName;
+    player.LastName = updatePlayerDTO.LastName;
+    player.Position = updatePlayerDTO.Position;
+    player.IsCaptain = updatePlayerDTO.IsCaptain;
+
+    db.SaveChanges();
+
+    return Results.NoContent();
+});
+
+
 // Alexis Endpoints ^^
 // Thomas Endpoints ->
 
