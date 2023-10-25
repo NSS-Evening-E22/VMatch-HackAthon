@@ -160,6 +160,38 @@ app.MapPost("/api/games/{gameId}/teams/{teamId}", (int gameId, int teamId, Volun
         return Results.Ok("Game was not created");
     }
 });
+// Is player Captain
+app.MapGet("/api/players/captains", (VolunteerMatchDbContext db) =>
+{
+    var captains = db.Players.Where(player => player.IsCaptain).ToList();
+
+    if (captains.Count == 0)
+    {
+        return Results.NotFound("No captains found.");
+    }
+
+    return Results.Ok(captains);
+});
+
+//Get players by Team
+app.MapGet("/api/teams/{teamId}/players", (int teamId, VolunteerMatchDbContext db) =>
+{
+    var team = db.Teams.Include(t => t.Players).FirstOrDefault(t => t.Id == teamId);
+
+    if (team == null)
+    {
+        return Results.NotFound("Team not found.");
+    }
+
+    var players = team.Players.ToList();
+
+    if (players.Count == 0)
+    {
+        return Results.NotFound("No players found for this team.");
+    }
+
+    return Results.Ok(players);
+});
 
 
 
