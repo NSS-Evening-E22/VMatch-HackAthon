@@ -1,8 +1,11 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using System.Text.Json.Serialization;
 using Volunteer_Match_Backend;
 using Volunteer_Match_Backend.Models;
+using Volunteer_Match_BE.DTO;
 using Volunteer_Match_BE.DTOs;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -223,27 +226,59 @@ app.MapDelete("/api/teams/{id}", (VolunteerMatchDbContext db, int id) =>
     return Results.NoContent();
 });
 
-//// Get all games
-//app.MapGet("", (VolunteerMatchDbContext db) =>
-//{
+// Get all games
+app.MapGet("/api/games", (VolunteerMatchDbContext db) =>
+{
+    List<Game> games = db.Games.ToList();
+    if (!games.Any())
+    {
+        return Results.NoContent();
+    }
+    return Results.Ok(games);
+});
 
-//});
+// Get single game
+app.MapGet("/api/games/{id}", (VolunteerMatchDbContext db, int id) =>
+{
+    Game game = db.Games.FirstOrDefault(g => g.Id == id);
+    if (game == null)
+    {
+        return Results.NoContent();
+    }
+    return Results.Ok(game);
+});
 
-//// Get single game
-//app.MapGet("", (VolunteerMatchDbContext db) =>
-//{
+// Create new game
+app.MapPost("/api/games", (VolunteerMatchDbContext db, CreateGameDTO game) =>
+{
+    Game newGame = new Game
+    {
+        Name = game.Name,
+    };
 
-//});
+    try
+    {
+        db.Games.Add(newGame);
+        db.SaveChanges();
+        return Results.Created("/api/games/${id}", newGame);
+    }
+    catch (DbUpdateException)
+    {
+        return Results.NoContent();
+    }
+});
 
-//// Create new game
-//app.MapPost("", (VolunteerMatchDbContext db) =>
-//{
+// Delete game
+app.MapDelete("/games/{id}", (VolunteerMatchDbContext db, int id) =>
+{
+    Game gameToDelete = db.Games.FirstOrDefault(g => g.Id == id);
+    if (gameToDelete == null)
+    {
+        return Results.NotFound();
+    }
+    db.Games.Remove(gameToDelete);
+    db.SaveChanges();
+    return Results.NoContent();
+});
 
-//});
-
-//// Delete game
-//app.MapDelete("", (VolunteerMatchDbContext db) =>
-//{
-
-//});
 app.Run();
