@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 using Volunteer_Match_Backend;
 using Volunteer_Match_Backend.Models;
+using Volunteer_Match_BE.DTO;
 using Volunteer_Match_BE.DTOs;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -133,6 +134,29 @@ app.MapPut("/api/players/{id}", (int playerId, UpdatePlayerDTO updatePlayerDTO, 
 
     return Results.NoContent();
 });
+
+//Add player to a Team 
+app.MapPost("/api/teams/{teamId}/players/{playerId}", (int teamId, int playerId, VolunteerMatchDbContext db) =>
+{
+    var teamToAddPlayer = db.Teams.FirstOrDefault(t => t.Id == teamId);
+    var playerToAdd = db.Players.FirstOrDefault(p => p.Id == playerId);
+
+    if (teamToAddPlayer == null || playerToAdd == null)
+    {
+        return Results.NotFound();
+    }
+
+    if (teamToAddPlayer.Players == null)
+    {
+        teamToAddPlayer.Players = new List<Player>();
+    }
+
+    teamToAddPlayer.Players.Add(playerToAdd);
+    db.SaveChanges();
+
+    return Results.Created($"/api/teams/{teamToAddPlayer.Id}", teamToAddPlayer);
+});
+
 
 
 // Alexis Endpoints ^^
