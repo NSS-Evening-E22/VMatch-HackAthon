@@ -143,10 +143,8 @@ app.MapPost("/api/games/{gameId}/teams/{teamId}", (int gameId, int teamId, Volun
     
     TeamGame newTeamGame = new TeamGame()
     {
-        TeamOneId = teamId,
-        TeamTwoId = teamId, 
+        TeamId = teamId,
         GameId = gameId,
-        WinningTeamId = teamId,
     };
 
     try
@@ -176,18 +174,10 @@ app.MapGet("/api/players/captains", (VolunteerMatchDbContext db) =>
 //Get players by Team
 app.MapGet("/api/teams/{teamId}/players", (int teamId, VolunteerMatchDbContext db) =>
 {
-    var team = db.Teams.Include(t => t.Players).FirstOrDefault(t => t.Id == teamId);
-
-    if (team == null)
+    List<Player> players = db.Players.Where(p => p.TeamId == teamId).ToList();
+    if (!players.Any())
     {
-        return Results.NotFound("Team not found.");
-    }
-
-    var players = team.Players.ToList();
-
-    if (players.Count == 0)
-    {
-        return Results.NotFound("No players found for this team.");
+        return Results.NotFound("No players found");
     }
 
     return Results.Ok(players);
@@ -312,6 +302,7 @@ app.MapPost("/api/games", (VolunteerMatchDbContext db, CreateGameDTO game) =>
     Game newGame = new Game
     {
         Name = game.Name,
+        WinningTeamId = null,
     };
 
     try
@@ -338,5 +329,17 @@ app.MapDelete("/games/{id}", (VolunteerMatchDbContext db, int id) =>
     db.SaveChanges();
     return Results.NoContent();
 });
+
+//// Check User
+//app.MapGet("/api/users/{volunteerId}", (VolunteerMatchDbContext db, string volunteerId) =>
+//{
+//    Volunteer user = db.Volunteers.FirstOrDefault(v => v.UID == volunteerId);
+//});
+
+//// Post User
+//app.MapPost("/api/users", (VolunteerMatchDbContext db, Volunteer user) =>
+//{
+
+//});
 
 app.Run();
