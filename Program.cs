@@ -15,7 +15,7 @@ builder.Services.AddCors(options =>
         policy =>
         {
             policy.WithOrigins("http://localhost:3000",
-                                "http://localhost:7120")
+                                "http://localhost:7")
                                 .AllowAnyHeader()
                                 .AllowAnyMethod();
         });
@@ -138,26 +138,50 @@ app.MapPut("/api/players/{id}", (int playerId, UpdatePlayerDTO updatePlayerDTO, 
 });
 
 //Add a team to a Game
+//app.MapPost("/api/games/{gameId}/teams/{teamId}", (int gameId, int teamId, VolunteerMatchDbContext db) =>
+//{
+
+//    TeamGame newTeamGame = new TeamGame()
+//    {
+//        TeamOneId = teamId,
+//        TeamTwoId = teamId, 
+//        GameId = gameId,
+//        WinningTeamId = teamId,
+//    };
+
+//    try
+//    {
+//        db.TeamGames.Add(newTeamGame);
+//        db.SaveChanges();
+//        return Results.Ok(newTeamGame);
+//    }
+//    catch (DbUpdateException)
+//    {
+//        return Results.Ok("Game was not created");
+//    }
+//});
+
 app.MapPost("/api/games/{gameId}/teams/{teamId}", (int gameId, int teamId, VolunteerMatchDbContext db) =>
 {
-    
-    TeamGame newGameTeam = new GameTeam()
-    {
-        TeamId = teamId,
-        GameId = gameId,
-    };
+    Game gameToAddTeam = db.Games.FirstOrDefault(g => g.Id == gameId);
+    Team teamToAdd = db.Teams.FirstOrDefault(t => t.Id == teamId);
 
-    try
+    if (gameToAddTeam == null || teamToAdd == null)
     {
-        db.GameTeam.Add(newGameTeam);
-        db.SaveChanges();
-        return Results.Ok(newGameTeam);
+        return Results.NotFound();
     }
-    catch (DbUpdateException)
+
+    if (gameToAddTeam.Teams == null)
     {
-        return Results.Ok("Game was not created");
+        gameToAddTeam.Teams = new List<Team>();
     }
+
+    gameToAddTeam.Teams.Add(teamToAdd);
+    db.SaveChanges();
+
+    return Results.Created($"/api/games/{gameToAddTeam.Id}", gameToAddTeam);
 });
+
 // Is player Captain
 app.MapGet("/api/players/captains", (VolunteerMatchDbContext db) =>
 {
@@ -182,9 +206,6 @@ app.MapGet("/api/teams/{teamId}/players", (int teamId, VolunteerMatchDbContext d
 
     return Results.Ok(players);
 });
-
-
-
 
 // Alexis Endpoints ^^
 // Thomas Endpoints ->
