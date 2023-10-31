@@ -128,6 +128,7 @@ app.MapPut("/api/players/{id}", (int Id, UpdatePlayerDTO updatePlayerDTO, Volunt
     player.VolunteerId = updatePlayerDTO.VolunteerId;
     player.TeamId = updatePlayerDTO.TeamId;
     player.FirstName = updatePlayerDTO.FirstName;
+    player.Image = updatePl
     player.LastName = updatePlayerDTO.LastName;
     player.Position = updatePlayerDTO.Position;
     player.IsCaptain = updatePlayerDTO.IsCaptain;
