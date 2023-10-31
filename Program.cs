@@ -67,9 +67,9 @@ app.MapGet("/api/players", (VolunteerMatchDbContext db) =>
     return Results.Ok(players);
 });
 //Get Single Player
-app.MapGet("/api/players/{id}", (int playerId, VolunteerMatchDbContext db) =>
+app.MapGet("/api/players/{id}", (int Id, VolunteerMatchDbContext db) =>
 {
-    var player = db.Players.FirstOrDefault(p => p.Id == playerId);
+    var player = db.Players.FirstOrDefault(p => p.Id == Id);
 
     if (player == null)
     {
@@ -100,9 +100,9 @@ app.MapPost("/api/player", (VolunteerMatchDbContext db, CreatePlayerDTO playerDT
 });
 
 //Delete PLayer
-app.MapDelete("/api/players/{id}", (int playerId, VolunteerMatchDbContext db) =>
+app.MapDelete("/api/players/{id}", (int Id, VolunteerMatchDbContext db) =>
 {
-    var player = db.Players.FirstOrDefault(p => p.Id ==playerId);
+    var player = db.Players.FirstOrDefault(p => p.Id == Id);
 
     if (player == null)
     {
@@ -116,9 +116,9 @@ app.MapDelete("/api/players/{id}", (int playerId, VolunteerMatchDbContext db) =>
 });
 
 //Update player
-app.MapPut("/api/players/{id}", (int playerId, UpdatePlayerDTO updatePlayerDTO, VolunteerMatchDbContext db) =>
+app.MapPut("/api/players/{id}", (int Id, UpdatePlayerDTO updatePlayerDTO, VolunteerMatchDbContext db) =>
 {
-    var player = db.Players.FirstOrDefault(p => p.Id == playerId);
+    var player = db.Players.FirstOrDefault(p => p.Id == Id);
 
     if (player == null)
     {
