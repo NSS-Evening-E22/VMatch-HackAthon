@@ -298,7 +298,7 @@ app.MapDelete("/api/teams/{id}", (VolunteerMatchDbContext db, int id) =>
 // Get all games
 app.MapGet("/api/games", (VolunteerMatchDbContext db) =>
 {
-    List<Game> games = db.Games.ToList();
+    List<Game> games = db.Games.Include(g => g.Teams).ToList();
     if (!games.Any())
     {
         return Results.NoContent();
@@ -309,7 +309,10 @@ app.MapGet("/api/games", (VolunteerMatchDbContext db) =>
 // Get single game
 app.MapGet("/api/games/{id}", (VolunteerMatchDbContext db, int id) =>
 {
-    Game game = db.Games.FirstOrDefault(g => g.Id == id);
+    Game game = db.Games
+    .Include(g => g.Teams)
+    .FirstOrDefault(g => g.Id == id);
+
     if (game == null)
     {
         return Results.NoContent();
@@ -351,16 +354,30 @@ app.MapDelete("/games/{id}", (VolunteerMatchDbContext db, int id) =>
     return Results.NoContent();
 });
 
-//// Check User
-//app.MapGet("/api/users/{volunteerId}", (VolunteerMatchDbContext db, string volunteerId) =>
-//{
-//    Volunteer user = db.Volunteers.FirstOrDefault(v => v.UID == volunteerId);
-//});
+// Check User
+app.MapGet("/api/users/{uid}", (VolunteerMatchDbContext db, string uid) =>
+{
+    Volunteer user = db.Volunteers.FirstOrDefault(v => v.UID == uid);
+    if (user == null)
+    {
+        return Results.NoContent();
+    }
+    return Results.Ok(user);
+});
 
-//// Post User
-//app.MapPost("/api/users", (VolunteerMatchDbContext db, Volunteer user) =>
-//{
-
-//});
+// Post User
+app.MapPost("/api/users", (VolunteerMatchDbContext db, Volunteer user) =>
+{
+    try
+    {
+        db.Volunteers.Add(user);
+        db.SaveChanges();
+        return Results.Created("/api/users", user);
+    }
+    catch (DbUpdateException)
+    {
+        return Results.NoContent();
+    }
+});
 
 app.Run();
