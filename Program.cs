@@ -69,7 +69,9 @@ app.MapGet("/api/players", (VolunteerMatchDbContext db) =>
 //Get Single Player
 app.MapGet("/api/players/{id}", (int Id, VolunteerMatchDbContext db) =>
 {
-    var player = db.Players.FirstOrDefault(p => p.Id == Id);
+    var player = db.Players
+    .Include(p => p.Team)
+    .FirstOrDefault(p => p.Id == Id);
 
     if (player == null)
     {
