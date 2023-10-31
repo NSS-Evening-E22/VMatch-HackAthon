@@ -141,7 +141,7 @@ app.MapPut("/api/players/{id}", (int playerId, UpdatePlayerDTO updatePlayerDTO, 
 app.MapPost("/api/games/{gameId}/teams/{teamId}", (int gameId, int teamId, VolunteerMatchDbContext db) =>
 {
     
-    TeamGame newTeamGame = new TeamGame()
+    TeamGame newGameTeam = new GameTeam()
     {
         TeamId = teamId,
         GameId = gameId,
@@ -149,9 +149,9 @@ app.MapPost("/api/games/{gameId}/teams/{teamId}", (int gameId, int teamId, Volun
 
     try
     {
-        db.TeamGames.Add(newTeamGame);
+        db.GameTeam.Add(newGameTeam);
         db.SaveChanges();
-        return Results.Ok(newTeamGame);
+        return Results.Ok(newGameTeam);
     }
     catch (DbUpdateException)
     {
@@ -288,7 +288,10 @@ app.MapGet("/api/games", (VolunteerMatchDbContext db) =>
 // Get single game
 app.MapGet("/api/games/{id}", (VolunteerMatchDbContext db, int id) =>
 {
-    Game game = db.Games.FirstOrDefault(g => g.Id == id);
+    Game game = db.Games
+    .Include(g => g.Teams)
+    .FirstOrDefault(g => g.Id == id);
+
     if (game == null)
     {
         return Results.NoContent();
@@ -330,16 +333,30 @@ app.MapDelete("/games/{id}", (VolunteerMatchDbContext db, int id) =>
     return Results.NoContent();
 });
 
-//// Check User
-//app.MapGet("/api/users/{volunteerId}", (VolunteerMatchDbContext db, string volunteerId) =>
-//{
-//    Volunteer user = db.Volunteers.FirstOrDefault(v => v.UID == volunteerId);
-//});
+// Check User
+app.MapGet("/api/users/{uid}", (VolunteerMatchDbContext db, string uid) =>
+{
+    Volunteer user = db.Volunteers.FirstOrDefault(v => v.UID == uid);
+    if (user == null)
+    {
+        return Results.NoContent();
+    }
+    return Results.Ok(user);
+});
 
-//// Post User
-//app.MapPost("/api/users", (VolunteerMatchDbContext db, Volunteer user) =>
-//{
-
-//});
+// Post User
+app.MapPost("/api/users", (VolunteerMatchDbContext db, Volunteer user) =>
+{
+    try
+    {
+        db.Volunteers.Add(user);
+        db.SaveChanges();
+        return Results.Created("/api/users", user);
+    }
+    catch (DbUpdateException)
+    {
+        return Results.NoContent();
+    }
+});
 
 app.Run();
