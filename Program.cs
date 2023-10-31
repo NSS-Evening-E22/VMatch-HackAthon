@@ -15,7 +15,7 @@ builder.Services.AddCors(options =>
         policy =>
         {
             policy.WithOrigins("http://localhost:3000",
-                                "http://localhost:7")
+                                "http://localhost:7047")
                                 .AllowAnyHeader()
                                 .AllowAnyMethod();
         });
@@ -67,9 +67,9 @@ app.MapGet("/api/players", (VolunteerMatchDbContext db) =>
     return Results.Ok(players);
 });
 //Get Single Player
-app.MapGet("/api/players/{id}", (int playerId, VolunteerMatchDbContext db) =>
+app.MapGet("/api/players/{id}", (int id, VolunteerMatchDbContext db) =>
 {
-    var player = db.Players.FirstOrDefault(p => p.Id == playerId);
+    var player = db.Players.FirstOrDefault(p => p.Id == id);
 
     if (player == null)
     {
@@ -116,9 +116,9 @@ app.MapDelete("/api/players/{id}", (int playerId, VolunteerMatchDbContext db) =>
 });
 
 //Update player
-app.MapPut("/api/players/{id}", (int playerId, UpdatePlayerDTO updatePlayerDTO, VolunteerMatchDbContext db) =>
+app.MapPut("/api/players/{id}", (int id, UpdatePlayerDTO updatePlayerDTO, VolunteerMatchDbContext db) =>
 {
-    var player = db.Players.FirstOrDefault(p => p.Id == playerId);
+    var player = db.Players.FirstOrDefault(p => p.Id == id);
 
     if (player == null)
     {
