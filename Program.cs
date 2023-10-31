@@ -298,7 +298,7 @@ app.MapDelete("/api/teams/{id}", (VolunteerMatchDbContext db, int id) =>
 // Get all games
 app.MapGet("/api/games", (VolunteerMatchDbContext db) =>
 {
-    List<Game> games = db.Games.ToList();
+    List<Game> games = db.Games.Include(g => g.Teams).ToList();
     if (!games.Any())
     {
         return Results.NoContent();
