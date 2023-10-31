@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Volunteer_Match_Backend;
@@ -11,9 +12,10 @@ using Volunteer_Match_Backend;
 namespace Volunteer_Match_BE.Migrations
 {
     [DbContext(typeof(VolunteerMatchDbContext))]
-    partial class VolunteerMatchDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231028183507_RestructureGamesEntity")]
+    partial class RestructureGamesEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,7 +36,7 @@ namespace Volunteer_Match_BE.Migrations
 
                     b.HasIndex("TeamsId");
 
-                    b.ToTable("GameTeam", (string)null);
+                    b.ToTable("GameTeam");
                 });
 
             modelBuilder.Entity("Volunteer_Match_Backend.Models.Game", b =>
@@ -57,7 +59,7 @@ namespace Volunteer_Match_BE.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Games", (string)null);
+                    b.ToTable("Games");
                 });
 
             modelBuilder.Entity("Volunteer_Match_Backend.Models.Player", b =>
@@ -94,7 +96,7 @@ namespace Volunteer_Match_BE.Migrations
 
                     b.HasIndex("TeamId");
 
-                    b.ToTable("Players", (string)null);
+                    b.ToTable("Players");
                 });
 
             modelBuilder.Entity("Volunteer_Match_Backend.Models.Team", b =>
@@ -129,7 +131,7 @@ namespace Volunteer_Match_BE.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Teams", (string)null);
+                    b.ToTable("Teams");
                 });
 
             modelBuilder.Entity("Volunteer_Match_Backend.Models.TeamGame", b =>
@@ -152,7 +154,7 @@ namespace Volunteer_Match_BE.Migrations
 
                     b.HasIndex("TeamId");
 
-                    b.ToTable("TeamGames", (string)null);
+                    b.ToTable("TeamGames");
                 });
 
             modelBuilder.Entity("Volunteer_Match_Backend.Models.Volunteer", b =>
@@ -173,7 +175,7 @@ namespace Volunteer_Match_BE.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Volunteers", (string)null);
+                    b.ToTable("Volunteers");
                 });
 
             modelBuilder.Entity("GameTeam", b =>

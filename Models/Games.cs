@@ -4,6 +4,7 @@
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public int? WinningTeamId { get; set; }
         public List<Team> Teams { get; set; }
         public DateTime? CreatedAt { get; set; } = DateTime.Now;
     }

@@ -18,9 +18,9 @@ namespace Volunteer_Match_Backend
         //protected override void OnModelCreating(ModelBuilder modelBuilder)
         //{
         //    modelBuilder.Entity<Team>()
-        //        .HasMany(e => e.Players)
-        //        .WithOne(e => e.Team)
-        //        .HasForeignKey(e => e.TeamId);
+        //        .HasMany(e => e.Games)
+        //        .WithOne(e => e.WinningTeam)
+        //        .HasForeignKey(e => e.WinningTeamId);
         //}
     }
 }

@@ -5,11 +5,7 @@
         public int Id { get; set; }
         public int GameId { get; set; }
         public Game Game { get; set; }
-        public int TeamOneId { get; set; }
-        public Team TeamOne { get; set; }
-        public int TeamTwoId { get; set; }
-        public Team TeamTwo { get; set; }
-        public int WinningTeamId { get; set; }
-        public Team WinningTeam { get; set; }
-      }
+        public int TeamId { get; set; }
+        public Team Team { get; set; }
+     }
 }
