@@ -342,7 +342,7 @@ app.MapPost("/api/games", (VolunteerMatchDbContext db, CreateGameDTO game) =>
 });
 
 // Delete game
-app.MapDelete("/games/{id}", (VolunteerMatchDbContext db, int id) =>
+app.MapDelete("api/games/{id}", (VolunteerMatchDbContext db, int id) =>
 {
     Game gameToDelete = db.Games.FirstOrDefault(g => g.Id == id);
     if (gameToDelete == null)
