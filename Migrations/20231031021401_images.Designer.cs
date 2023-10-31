@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Volunteer_Match_Backend;
@@ -11,9 +12,10 @@ using Volunteer_Match_Backend;
 namespace Volunteer_Match_BE.Migrations
 {
     [DbContext(typeof(VolunteerMatchDbContext))]
-    partial class VolunteerMatchDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231031021401_images")]
+    partial class images
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

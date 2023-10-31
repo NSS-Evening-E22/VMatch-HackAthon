@@ -7,7 +7,7 @@
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Position { get; set; }
-        public string image { get; set; }
+        public string Image { get; set; }
         public bool IsCaptain { get; set; }
     }
 }
