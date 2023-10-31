@@ -89,7 +89,8 @@ app.MapPost("/api/player", (VolunteerMatchDbContext db, CreatePlayerDTO playerDT
         FirstName = playerDTO.FirstName,
         LastName = playerDTO.LastName,
         Position = playerDTO.Position,
-        IsCaptain = playerDTO.IsCaptain
+        IsCaptain = playerDTO.IsCaptain,
+        Image = playerDTO.Image,
     };
 
     
